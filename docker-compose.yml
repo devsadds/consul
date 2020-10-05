@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+
+  consul:
+    image: devsadds/consul:1.8.4
+    build: 
+      context: build/consul/.
+      args:
+        BASE_IMAGE : "consul:1.8.4"
+    command: "consul agent -config-file /consul/config/config.json"
+    healthcheck:
+      test: ["CMD-SHELL", "consul info | awk '/health_score/{if ($$3 >=1) exit 1; else exit 0}'"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
